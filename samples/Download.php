@@ -13,8 +13,8 @@ $http = new DefaultCurlRequest("mafreebox.free.fr");
 
 $authService = new FreeboxOsAuthService($http);
 $appToken = file_get_contents(__ROOT__."/appToken.txt");
-$challenge = $authService->login()["challenge"];
-$sessionToken = $authService->openSession(APP_ID, $appToken,$challenge )["session_token"];
+$challenge = $authService->login()->challenge;
+$sessionToken = $authService->openSession(APP_ID, $appToken,$challenge )->session_token;
 
 $downloadService = new FreeboxOsDownloadService($http, $sessionToken);
 $downloadService->setMode(THROTTLING_MODE_NORMAL);

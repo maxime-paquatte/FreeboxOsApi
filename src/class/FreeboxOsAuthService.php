@@ -1,12 +1,13 @@
 <?php
 
 require_once "iJsonHttpRequest.php";
+require_once "FreeboxOsServiceBase.php";
 
-class FreeboxOsAuthService
+class FreeboxOsAuthService extends FreeboxOsServiceBase
 {
     public function __construct(iJsonHttpRequest $httpRequest)
     {
-        $this->httpRequest = $httpRequest;
+        parent::__construct($httpRequest);
     }
 
     /**
@@ -14,19 +15,16 @@ class FreeboxOsAuthService
      * remark: You must persist the returned app_token
      * @return array whose contains : app_token, track_id
      * @throws Exception
+     * @throws FreeboxOsFailedResponse
      */
     public function authorize($appId, $appName, $appVersion, $deviceName)
     {
-        $json = $this->httpRequest->post('/api/v3/login/authorize/',  array(
+        return $this->httpPost('/api/v3/login/authorize/',  [
             'app_id' => $appId,
             'app_name' => $appName,
             'app_version' => $appVersion,
             'device_name' => $deviceName
-        ));
-        if (!$json['success'])
-            throw new Exception($json['error_code'] . ': ' . $json['msg']);
-
-        return $json['result'];
+        ]);
     }
 
 
@@ -35,29 +33,22 @@ class FreeboxOsAuthService
      * @param $trackId
      * @return array whose contains : status, challenge
      * @throws Exception
+     * @throws FreeboxOsFailedResponse
      */
     public function authorizationProgress($trackId)
     {
-        $json = $this->httpRequest->get("/api/v3/login/authorize/" . $trackId);
-        if (!$json['success'])
-            throw new Exception($json['error_code'] . ': ' . $json['msg']);
-
-        return $json['result'];
+        return $this->httpGet("/api/v3/login/authorize/" . $trackId);
     }
 
     /**
      * Get a new challenge
      * @return array whose contains : logged_in, challenge
      * @throws Exception
+     * @throws FreeboxOsFailedResponse
      */
     public function login()
     {
-        $json = $this->httpRequest->get("/api/v3/login/");
-
-        if (!$json['success'])
-            throw new Exception($json['error_code'] . ': ' . $json['msg']);
-
-        return $json['result'];
+        return $this->httpGet("/api/v3/login/");
     }
 
     /**
@@ -66,31 +57,26 @@ class FreeboxOsAuthService
      * @param $challenge
      * @return array whose contains : session_token, challenge, permissions
      * @throws Exception
+     * @throws FreeboxOsFailedResponse
      */
     public function openSession($appId, $appToken, $challenge)
     {
         $password = hash_hmac('sha1', $challenge, $appToken);
 
-        $json = $this->httpRequest->post("/api/v3/login/session/", array(
+        return $this->httpPost("/api/v3/login/session/", [
             'app_id' => $appId,
             'password' => $password
-        ));
-
-        if (!$json['success'])
-            throw new Exception($json['error_code'] . ': ' . $json['msg']);
-
-        return $json['result'];
+        ]);
     }
 
     /**
      * close the current session
      * @throws Exception
+     * @throws FreeboxOsFailedResponse
      */
     public function logout()
     {
-        $json = $this->httpRequest->post("/api/v3/login/logout/");
-        if (!$json['success'])
-            throw new Exception($json['error_code'] . ': ' . $json['msg']);
+        $this->httpPost("/api/v3/login/logout/");
     }
 
 }

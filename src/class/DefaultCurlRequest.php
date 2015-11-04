@@ -30,7 +30,7 @@ class DefaultCurlRequest implements iJsonHttpRequest
         ));
         $response = curl_exec($ch);
         if($response === FALSE) die(curl_error($ch));
-        return json_decode($response, true);
+        return json_decode($response);
     }
 
     public function post($relUrl, $content, $headers =array())
@@ -51,7 +51,7 @@ class DefaultCurlRequest implements iJsonHttpRequest
         $response = curl_exec($ch);
         if($response === FALSE) die(curl_error($ch));
 
-        return json_decode($response, true);
+        return json_decode($response);
     }
 
     public function put($relUrl, $content, $headers =array())
@@ -73,6 +73,6 @@ class DefaultCurlRequest implements iJsonHttpRequest
         $response = curl_exec($ch);
         if($response === FALSE) die(curl_error($ch));
 
-        return json_decode($response, true);
+        return json_decode($response);
     }
 }
