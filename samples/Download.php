@@ -18,3 +18,5 @@ $sessionToken = $authService->openSession(APP_ID, $appToken,$challenge )->sessio
 
 $downloadService = new FreeboxOsDownloadService($http, $sessionToken);
 $downloadService->setMode(THROTTLING_MODE_NORMAL);
+
+$authService->logout();

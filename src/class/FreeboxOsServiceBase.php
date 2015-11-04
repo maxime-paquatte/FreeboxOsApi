@@ -34,14 +34,14 @@ abstract class FreeboxOsServiceBase
         return $this->getResult($json);
     }
 
-    protected function httpPost($relUrl, $data){
+    protected function httpPost($relUrl, $data = null){
         $header = $this->sessionToken != null ? [$this->authHeader => $this->sessionToken] : [];
         $json = $this->httpRequest->post($relUrl, $data, $header);
 
         return $this->getResult($json);
     }
 
-    protected function httpPut($relUrl, $data){
+    protected function httpPut($relUrl, $data = null){
         $header = $this->sessionToken != null ? [$this->authHeader => $this->sessionToken] : [];
         $json = $this->httpRequest->put($relUrl, $data, $header);
 
@@ -51,6 +51,8 @@ abstract class FreeboxOsServiceBase
     private function getResult($json){
         if (!$json->success)
             throw new FreeboxOsFailedResponse($json->error_code, $json->msg);
-        return  $json->result;
+
+        if(property_exists ($json, "result")) return  $json->result;
+        return true;
     }
 }

@@ -53,20 +53,21 @@ class FreeboxOsAuthService extends FreeboxOsServiceBase
 
     /**
      * Opening a session with the challenge (obtains by authorizationProgress or login) and the app_token (obtains by authorize)
+     * @param $appId
      * @param $appToken
      * @param $challenge
      * @return array whose contains : session_token, challenge, permissions
-     * @throws Exception
-     * @throws FreeboxOsFailedResponse
      */
     public function openSession($appId, $appToken, $challenge)
     {
         $password = hash_hmac('sha1', $challenge, $appToken);
 
-        return $this->httpPost("/api/v3/login/session/", [
+        $json = $this->httpPost("/api/v3/login/session/", [
             'app_id' => $appId,
             'password' => $password
         ]);
+        $this->sessionToken = $json->session_token;
+        return $json;
     }
 
     /**
