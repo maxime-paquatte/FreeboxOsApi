@@ -1,5 +1,11 @@
 # Freebox OS API
 
+> **Note:**
+>
+> This is the very first version, very few of the freebox API is implemented
+> don't hesitate to contribute, or create a ticket if you want a particular API implementation
+>
+
 First, create an HTTP json service.
 You can use the default or create your own that implements iJsonHttpRequest:
 ```php
